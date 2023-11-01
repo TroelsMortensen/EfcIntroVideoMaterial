@@ -10,6 +10,7 @@ public class BookAppDbContext : DbContext
     public DbSet<Review> Reviews => Set<Review>();
     public DbSet<Category> Categories => Set<Category>();
 
+    public DbSet<Author> Author => Set<Author>();
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlite(@"Data Source = C:\TRMO\RiderProjects\EfcIntroduction\VideoExamples\BookDatabase.db");

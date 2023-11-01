@@ -4,15 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using VideoExamples.DataAccess;
 using VideoExamples.Entities;
-using VideoExamples.Migrations;
 
 // Book book = new()
 // {
-//     Id = 1,
+//     //Id = 1,
 //     Price = 50.50m,
 //     Publisher = "VIA bookstore",
 //     Title = "SomeBook",
-//     PublishDate = DateTime.Parse("2023-10-24 15:27:31.1867944")
+//     PublishDate = DateTime.Now
 // };
 //
 // Book resultingBook = await InsertBookAsync(book);
@@ -45,12 +44,12 @@ using VideoExamples.Migrations;
 
 // Book bookWithPriceOffer = await GetBookWithPriceOffer(1);
 
-Review review = new()
-{
-    Comment = "Decent BOok",
-    Rating = 4,
-    VoterName = "Troels",
-};
+// Review review = new()
+// {
+//     Comment = "Decent BOok",
+//     Rating = 4,
+//     VoterName = "Troels",
+// };
 
 // await AddReviewToBookUsingFk(review);
 
@@ -61,9 +60,25 @@ Review review = new()
 // Book both = await LoadWithBoth(1);
 // int stop = 0;
 
+// await AddCategoryToBook("Sci-Fi", 1);
+using BookAppDbContext context = new();
+int stop = 0;
 
+await AddAuthorToBook(1, 1, 1);
+await AddAuthorToBook(2, 1, 2);
 
-await AddCategoryToBook("Sci-Fi", 1);
+async Task AddAuthorToBook(int authorId, int bookId, int order)
+{
+    BookAuthor bookAuthor = new()
+    {
+        AuthorId = authorId,
+        BookId = bookId,
+        Order = order
+    };
+    using BookAppDbContext context = new();
+    await context.Set<BookAuthor>().AddAsync(bookAuthor);
+    await context.SaveChangesAsync();
+}
 
 async Task AddCategoryToBook(string catId, int bookId)
 {
@@ -75,7 +90,7 @@ async Task AddCategoryToBook(string catId, int bookId)
     Category? existingCategory = await context.Categories
         .Include(cat => cat.Books)
         .FirstOrDefaultAsync(cat => cat.Name.Equals(catId));
-    
+
     existingCategory.Books.Add(existingBook);
 
     context.Categories.Update(existingCategory);
@@ -160,6 +175,14 @@ async Task<Book?> GetBook(int id)
 {
     using BookAppDbContext context = new();
     Book? foundBook = await context.Books.FindAsync(id);
+    return foundBook;
+}
+
+async Task<Book?> GetBook2(int id)
+{
+    using BookAppDbContext context = new();
+    Book? foundBook = await context.Books
+        .FirstOrDefaultAsync(book => book.Id == id);
     return foundBook;
 }
 

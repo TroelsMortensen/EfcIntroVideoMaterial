@@ -9,7 +9,7 @@ public class Book
     public string Publisher { get; set; }
 
     // relationships
-    public PriceOffer PriceOffer { get; set; }
+    public PriceOffer? PriceOffer { get; set; }
     public ICollection<Review> Reviews { get; set; }
     public ICollection<Category> Categories { get; set; }
     public ICollection<BookAuthor> AuthorLinks { get; set; }
